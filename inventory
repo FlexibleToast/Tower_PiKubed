@@ -1,0 +1,11 @@
+[pikubed_cluster:children]
+masters
+workers
+
+[masters]
+pikubed-m0  vip_priority=110
+pikubed-m1  vip_priority=109
+pikubed-m2  vip_priority=108
+
+[workers]
+pikubed-w0

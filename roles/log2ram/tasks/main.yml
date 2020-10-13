@@ -1,0 +1,33 @@
+---
+# tasks file for roles/log2ram
+- name: Check if already installed
+  stat:
+    path: /etc/log2ram.conf
+  register: config_file
+
+- name: Clear system log to make small enough to move log
+  command:
+    argv:
+    - journalctl
+    - --vacuum-size=10M
+
+- name: Install on Debian based OS
+  include_tasks: log2ram-deb.yml
+  when: not config_file.stat.exists and ansible_distribution_file_variety == "Debian"
+
+- name: Install from source
+  include_tasks: log2ram-source.yml
+  when: not config_file.stat.exists and ansible_distribution_file_variety != "Debian"
+
+- name: Set size of log2ram folder in RAM
+  lineinfile:
+    path: /etc/log2ram.conf
+    regexp: ^SIZE=
+    line:   SIZE={{ log_folder_size }}
+  register: log2ram_conf
+
+- name: Restart log2ram if configuration changed
+  service:
+    name: log2ram
+    state: restarted
+  when: log2ram_conf.changed

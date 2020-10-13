@@ -1,0 +1,19 @@
+- name: Install k3s on bramble of Raspberry Pis
+  hosts: all
+  become: true
+
+  roles:
+    - role: common
+      tags: common
+
+    - role: log2ram
+      vars:
+        - log_folder_size: '{{ log2ram.folder_size }}'
+      tags: log2ram
+    
+    - role: keepalived-vip
+      vars:
+        - vip_pass: '{{ vip.pass }}'
+        - vip_ip: '{{ vip.ip }}'
+      when: vip_priority is defined
+      tags: vip
