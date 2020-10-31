@@ -3,7 +3,7 @@
 - name: Check if VIP defined
   fail:
     msg: Must define a VIP
-  when: vip undefined
+  when: vip is undefined
 
 - name: install keepalived on rpm based machines
   yum:
