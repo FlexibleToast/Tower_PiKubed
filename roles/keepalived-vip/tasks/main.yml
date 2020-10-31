@@ -1,5 +1,10 @@
 ---
 # tasks file for roles/keepalived-vip
+- name: Check if VIP defined
+  fail:
+    msg: Must define a VIP
+  when: vip undefined
+
 - name: install keepalived on rpm based machines
   yum:
     name: keepalived
