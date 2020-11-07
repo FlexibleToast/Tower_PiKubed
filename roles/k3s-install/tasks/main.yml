@@ -43,25 +43,31 @@
     K3S_TOKEN: '{{ k3s_token }}'
     INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
   when: ansible_host in groups['masters'][0]
+  args:
+    creates: /var/lib/rancher/k3s/server/node-token
 
 - name: Install k3s on masters
   command: 
     argv:
     - /tmp/k3s.sh 
     - server 
-    - --server https://{{ groups['masters'][0] }}:6443
+    - "--server https://{{ groups['masters'][0] }}:6443"
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
     INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
   when: ansible_host in groups['masters'][1:]
+  args:
+    creates: /var/lib/rancher/k3s/server/node-token
 
 - name: Install k3s on workers
   command:
     argv:
     - /tmp/k3s.sh 
     - agent 
-    - --server https://{{ groups['masters'][0] }}:6443
+    - "--server https://{{ groups['masters'][0] }}:6443"
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
     INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
   when: ansible_host in groups['workers']
+  args:
+    creates: /var/lib/rancher/k3s/agent/client-ca.cr
