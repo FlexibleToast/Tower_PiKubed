@@ -41,7 +41,7 @@
     - --cluster-init
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
-    INSTALL_K3S_VERSION: '{{ k3s_version }}'
+    INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
   when: ansible_host in groups['masters'][0]
 
 - name: Install k3s on masters
@@ -52,7 +52,7 @@
     - --server https://{{ groups['masters'][0] }}:6443
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
-    INSTALL_K3S_VERSION: '{{ k3s_version }}'
+    INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
   when: ansible_host in groups['masters'][1:]
 
 - name: Install k3s on workers
@@ -63,5 +63,5 @@
     - --server https://{{ groups['masters'][0] }}:6443
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
-    INSTALL_K3S_VERSION: '{{ k3s_version }}'
+    INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
   when: ansible_host in groups['workers']

@@ -8,7 +8,7 @@ vip:
 
 k3s:
   token: "{{ vault_cluster_token }}"
-  version: latest
+  chennel: latest
 
 kadalu:
 - name: appdata-02a
