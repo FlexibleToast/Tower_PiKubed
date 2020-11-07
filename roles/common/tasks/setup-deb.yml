@@ -5,8 +5,12 @@
     state: latest
     update_cache: yes
     autoremove: yes
-  register: updated
 
-- name: Reboot hosts if updated
+- name: Check if reboot required
+  stat:
+    path: /var/run/reboot-required
+  register: reboot_flag
+
+- name: Reboot hosts if required
   reboot:
-  when: updated.changed
+  when: reboot_flag.stat.exists
