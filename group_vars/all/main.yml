@@ -6,6 +6,9 @@ vip:
   ip: 192.168.0.119
   pass: "{{ vault_vip_pass }}"
 
+k3s:
+  token: "{{ vault_cluster_token }}"
+
 kadalu:
 - name: appdata-02a
   type: Replica2
