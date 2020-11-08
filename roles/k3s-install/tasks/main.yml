@@ -5,27 +5,13 @@
     msg: Must provide a token for k3s
   when: k3s_token is undefined
 
-- name: Enable cgroup via boot commandline if not already enabled for Ubuntu 18.04
-  lineinfile:
-    path: /boot/firmware/nobtcmd.txt
-    backrefs: yes
-    regexp: '^((?!.*\bcgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory\b).*)$'
-    line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
-  register: cgroup_result
+- name: Enable cgroups on Ubuntu 18.04
+  include_tasks: cgroups_ubuntu18.yml
   when: ansible_distribution_major_version == "18"
 
-- name: Enable cgroup via boot commandline if not already enabled for Ubuntu 20.04
-  lineinfile:
-    path: /boot/firmware/cmdline.txt
-    backrefs: yes
-    regexp: '^((?!.*\bcgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory\b).*)$'
-    line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
-  register: cgroup_result
+- name: Enable cgroups on Ubuntu 20.04
+  include_tasks: cgroups_ubuntu20.yml
   when: ansible_distribution_major_version == "20"
-
-- name: Reboot host to enable cgroups
-  reboot:
-  when: cgroup_result.changed
 
 - name: Get k3s install script
   get_url:
