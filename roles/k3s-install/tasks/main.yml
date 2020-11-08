@@ -51,6 +51,13 @@
   when: ansible_host in groups['masters'][1:]
   args:
     creates: /var/lib/rancher/k3s/server/node-token
+  ignore_errors: yes
+
+- name: Ensure k3s is started
+  service:
+    name: k3s
+    state: started
+    enabled: yes
 
 - name: Install k3s on workers
   command:
