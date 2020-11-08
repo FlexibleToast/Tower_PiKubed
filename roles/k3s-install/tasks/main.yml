@@ -45,13 +45,20 @@
   when: ansible_host in groups['masters'][0]
   args:
     creates: /var/lib/rancher/k3s/server/node-token
+  register: master_deploy
+
+- name: Pause for 5 minutes to allow initial master to fully deploy
+  pause:
+    minutes: 5
+  when: master_deploy.changed
 
 - name: Install k3s on masters
   command: 
     argv:
     - /tmp/k3s.sh 
     - server 
-    - "--server https://{{ groups['masters'][0] }}:6443"
+    - --server
+    - https://{{ groups['masters'][0] }}:6443
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
     INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
@@ -64,7 +71,8 @@
     argv:
     - /tmp/k3s.sh 
     - agent 
-    - "--server https://{{ groups['masters'][0] }}:6443"
+    - --server
+    - https://{{ groups['masters'][0] }}:6443
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
     INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
