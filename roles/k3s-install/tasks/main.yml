@@ -58,6 +58,7 @@
     name: k3s
     state: started
     enabled: yes
+  when: ansible_host in groups['masters']
 
 - name: Install k3s on workers
   command:
