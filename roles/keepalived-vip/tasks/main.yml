@@ -3,7 +3,7 @@
 - name: Check if VIP defined
   fail:
     msg: Must define a VIP
-  when: vip is undefined
+  when: vip_ip is undefined
 
 - name: Install keepalived
   package:
