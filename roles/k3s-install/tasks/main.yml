@@ -78,5 +78,5 @@
   replace:
     path: /etc/rancher/k3s/k3s.yaml
     regexp: "server: https://127.0.0.1:6443"
-    replace: "server: https://{{ vip }}:6443"
-  when: ansible_host in groups['masters']
+    replace: "server: https://{{ k3s_vip }}:6443"
+  when: ansible_hostname in groups['masters'] and k3s_vip is defined
