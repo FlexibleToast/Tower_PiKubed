@@ -1,0 +1,17 @@
+---
+- name: Wipe USB drives
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Use wipefs on each drive
+    command:
+      argv:
+        - wipefs
+        - --force
+        - --all
+        - --quiet
+        - "{{ __drive }}"
+    loop: "{{ drives }}"
+    loop_control:
+      loop_var: __drive

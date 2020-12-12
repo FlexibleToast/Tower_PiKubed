@@ -1,6 +1,9 @@
 - name: Install k3s on bramble of Raspberry Pis
   hosts: all
   become: true
+  vars_files:
+    - vars/main.yml
+    - vars/vault
 
   roles:
     - role: common
@@ -17,3 +20,9 @@
         - vip_ip: '{{ vip.ip }}'
       when: vip_priority is defined
       tags: vip
+
+    - role: k3s-install
+      vars:
+        - k3s_token: '{{ k3s.token }}'
+        - k3s_channel: "{{ k3s.channel }}"
+        - k3s_vip: '{{ vip.ip }}'

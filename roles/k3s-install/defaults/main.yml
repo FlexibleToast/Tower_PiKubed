@@ -1,0 +1,3 @@
+---
+# defaults file for k3s-install
+k3s_channel: stable

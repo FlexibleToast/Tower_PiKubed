@@ -3,44 +3,25 @@
 - name: Check if VIP defined
   fail:
     msg: Must define a VIP
-  when: vip is undefined
+  when: vip_ip is undefined
 
-- name: install keepalived on rpm based machines
-  yum:
+- name: Install keepalived
+  package:
     name: keepalived
     state: present
-  when: ansible_distribution_file_variety == "RedHat" and vip_priority is defined
+  when: vip_priority is defined
 
-- name: install keepalived on deb based machines
-  apt:
-    name: keepalived
-    state: present
-  when: ansible_distribution_file_variety == "Debian" and vip_priority is defined
-
-- name: check if keepalived.conf exists
-  stat:
-    path: /etc/keepalived/keepalived.conf
-  register: file_stat
-
-- name: keep copy of original keepalived.conf
-  copy:
-    remote_src: yes
-    src: /etc/keepalived/keepalived.conf
-    dest: /etc/keepalived/keepalived.conf.orig
-    force: no
-  when: not file_stat.stat.exists
-  ignore_errors: yes
-
-- name: apply keepalived.conf
+- name: Apply keepalived.conf
   template:
     src: templates/keepalived.conf.j2
     dest: /etc/keepalived/keepalived.conf
     owner: root
     group: root
     mode: 0644
+    backup: yes
   notify: restart keepalived
 
-- name: start keepalived
+- name: Start keepalived
   service:
     name: keepalived
     enabled: true

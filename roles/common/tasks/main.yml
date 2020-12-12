@@ -6,7 +6,7 @@
 - name: Change current runlevel
   command: systemctl isolate multi-user.target
 
-- name: change runlevel default target
+- name: Change runlevel default target
   command: systemctl set-default multi-user.target
 
 - name: Change hostname
