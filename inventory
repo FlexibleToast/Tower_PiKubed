@@ -3,9 +3,9 @@ masters
 workers
 
 [masters]
-pikubed-m0  vip_priority=110 drives="[ '/dev/sda', '/dev/sdb' ]"
-pikubed-m1  vip_priority=109 drives="[ '/dev/sda', '/dev/sdb' ]"
-pikubed-m2  vip_priority=108 drives="[ '/dev/sda', '/dev/sdb' ]"
+pikubed-m0  ansible_host=pikubed-m0.lan vip_priority=110 drives="[ '/dev/sda', '/dev/sdb' ]"
+pikubed-m1  ansible_host=pikubed-m1.lan vip_priority=109 drives="[ '/dev/sda', '/dev/sdb' ]"
+pikubed-m2  ansible_host=pikubed-m2.lan vip_priority=108 drives="[ '/dev/sda', '/dev/sdb' ]"
 
 [workers]
-pikubed-w0 drives="[ '/dev/sda', '/dev/sdb' ]"
+pikubed-w0 ansible_host=pikubed-w0.lan drives="[ '/dev/sda', '/dev/sdb' ]"

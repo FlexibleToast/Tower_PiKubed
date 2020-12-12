@@ -73,3 +73,10 @@
   when: ansible_host in groups['workers']
   args:
     creates: /var/lib/rancher/k3s/agent/client-ca.cr
+
+- name: Change k3s.yaml to use VIP
+  replace:
+    path: /etc/rancher/k3s/k3s.yaml
+    regexp: "server: https://127.0.0.1:6443"
+    replace: "server: https://{{ vip }}:6443"
+  when: ansible_host in groups['masters']

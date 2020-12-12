@@ -1,0 +1,13 @@
+---
+- name: Retrieve k3s.yml
+  hosts: pikubed-m0
+  gather_facts: no
+  tasks:
+
+  - name: Fetch k3s.yml
+    fetch:
+      src: /etc/rancher/k3s/k3s.yaml
+      dest: ~/.kube/config.yaml
+      mode: 0600
+      flat: yes
+    become: yes
