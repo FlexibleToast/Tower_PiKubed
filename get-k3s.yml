@@ -1,6 +1,6 @@
 ---
 - name: Retrieve k3s.yml
-  hosts: pikubed-m0
+  hosts: all
   gather_facts: no
   tasks:
 
@@ -11,3 +11,4 @@
       mode: 0600
       flat: yes
     become: yes
+    when: inventory_hostname == groups['masters'][0]

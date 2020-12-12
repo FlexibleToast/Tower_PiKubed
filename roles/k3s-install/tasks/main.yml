@@ -28,7 +28,7 @@
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
     INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
-  when: ansible_host in groups['masters'][0]
+  when: inventory_hostname == groups['masters'][0]
   args:
     creates: /var/lib/rancher/k3s/server/node-token
   register: master_deploy
@@ -37,6 +37,7 @@
   pause:
     minutes: 5
   when: master_deploy.changed
+  delegate_to: localhost
 
 - name: Install k3s on masters
   command: 
@@ -48,7 +49,7 @@
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
     INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
-  when: ansible_host in groups['masters'][1:]
+  when: inventory_hostname in groups['masters'][1:]
   args:
     creates: /var/lib/rancher/k3s/server/node-token
   ignore_errors: yes
@@ -58,7 +59,7 @@
     name: k3s
     state: started
     enabled: yes
-  when: ansible_host in groups['masters']
+  when: inventory_hostname in groups['masters']
 
 - name: Install k3s on workers
   command:
@@ -70,13 +71,13 @@
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
     INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
-  when: ansible_host in groups['workers']
+  when: inventory_hostname in groups['workers']
   args:
-    creates: /var/lib/rancher/k3s/agent/client-ca.cr
+    creates: /var/lib/rancher/k3s/agent/client-ca.crt
 
 - name: Change k3s.yaml to use VIP
   replace:
     path: /etc/rancher/k3s/k3s.yaml
     regexp: "server: https://127.0.0.1:6443"
     replace: "server: https://{{ k3s_vip }}:6443"
-  when: ansible_hostname in groups['masters'] and k3s_vip is defined
+  when: inventory_hostname in groups['masters'] and k3s_vip is defined
