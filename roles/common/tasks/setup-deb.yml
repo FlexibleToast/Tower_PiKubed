@@ -6,6 +6,21 @@
     update_cache: yes
     autoremove: yes
 
+- name: Install prereqs
+  apt:
+    name: '{{ item }}'
+    state: latest
+  loop:
+  - f2fs-tools
+  
+- name: Remove unnecessary packages
+  apt:
+    name: '{{ item }}'
+    state: absent
+    autoremove: yes
+  loop:
+  - snapd
+
 - name: Check if reboot required
   stat:
     path: /var/run/reboot-required

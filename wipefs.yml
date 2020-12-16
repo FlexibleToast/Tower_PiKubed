@@ -1,8 +1,47 @@
 ---
 - name: Wipe USB drives
   hosts: all
-  gather_facts: no
   tasks:
+
+  - name: Remove luks mountpoint
+    mount:
+      path: "{{ item.mount }}/{{ item.name }}"
+      src: /dev/mapper/{{ ansible_devices[item.device].partitions[item.device + (item.partition | string)].uuid }}_luks
+      fstype: "{{ item.fstype }}"
+      state: absent
+    loop: "{{ drives }}"
+
+  - name: Remove from /etc/crypttab
+    crypttab:
+      name: "{{ ansible_devices[item.device].partitions[item.device + (item.partition | string)].uuid }}_luks"
+      state: absent
+    loop: "{{ drives }}"
+
+  - name: Close luks device
+    luks_device:
+      name: "{{ ansible_devices[item.device].partitions[item.device + (item.partition | string)].uuid }}_luks"
+      device: '/dev/{{ item.device }}{{ item.partition }}'
+      state: closed
+      keyfile: /etc/luks_keyfile
+    loop: '{{ drives }}'
+
+  - name: Remove luks device
+    luks_device:
+      device: '/dev/{{ item.device }}{{ item.partition }}'
+      state: absent
+    loop: '{{ drives }}'
+
+  - name: Remove drive partition
+    parted:
+      device: '/dev/{{ item.device }}'
+      number: '{{ item.partition }}'
+      state: absent
+    loop: '{{ drives }}'
+    register: parted_result
+
+  - name: Probe partitions
+    command: partprobe
+    when: parted_result.changed
 
   - name: Use wipefs on each drive
     command:
@@ -11,7 +50,7 @@
         - --force
         - --all
         - --quiet
-        - "{{ __drive }}"
+        - "/dev/{{ __drive.device }}"
     loop: "{{ drives }}"
     loop_control:
       loop_var: __drive

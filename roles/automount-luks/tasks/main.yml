@@ -1,0 +1,67 @@
+---
+# tasks file for automount-luks
+- name: Create keyfile
+  command: dd if\=/dev/urandom of\=/etc/luks_keyfile bs\=1024 count\=4
+  args:
+    creates: "/etc/luks_keyfile"
+
+- name: Make keyfile read only
+  file:
+    path: "/etc/luks_keyfile"
+    state: file
+    owner: root
+    group: root
+    mode: 0400
+
+- name: Create drive partition
+  parted:
+    device: '/dev/{{ item.device }}'
+    number: '{{ item.partition }}'
+    state: present
+  loop: '{{ drives }}'
+
+- name: Create luks device
+  luks_device:
+    device: '/dev/{{ item.device }}{{ item.partition }}'
+    state: present
+    keyfile: /etc/luks_keyfile
+  loop: '{{ drives }}'
+  register: luks_result
+
+- block:
+  - name: Probe partitions
+    command: partprobe
+
+  - name: Re-gather facts
+    setup:
+  when: luks_result.changed
+
+- name: Open luks device
+  luks_device:
+    name: "{{ ansible_devices[item.device].partitions[item.device + (item.partition | string)].uuid }}_luks"
+    device: '/dev/{{ item.device }}{{ item.partition }}'
+    state: opened
+    keyfile: /etc/luks_keyfile
+  loop: '{{ drives }}'
+
+- name: Create filesystem
+  filesystem:
+      dev: "/dev/mapper/{{ ansible_devices[item.device].partitions[item.device + (item.partition | string)].uuid }}_luks"
+      fstype: "{{ item.fstype }}"
+  loop: "{{ drives }}"
+
+- name: Add drive to /etc/crypttab
+  crypttab:
+    backing_device: "UUID={{ ansible_devices[item.device].partitions[item.device + (item.partition | string)].uuid }}"
+    name: "{{ ansible_devices[item.device].partitions[item.device + (item.partition | string)].uuid }}_luks"
+    password: /etc/luks_keyfile
+    state: present
+  loop: "{{ drives }}"
+
+- name: Mount the luks device
+  mount:
+    path: "{{ item.mount }}/{{ item.name }}"
+    src: /dev/mapper/{{ ansible_devices[item.device].partitions[item.device + (item.partition | string)].uuid }}_luks
+    fstype: "{{ item.fstype }}"
+    state: mounted
+  loop: "{{ drives }}"

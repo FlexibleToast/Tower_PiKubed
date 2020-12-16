@@ -1,11 +1,43 @@
-[pikubed_cluster:children]
-masters
-workers
-
-[masters]
-pikubed-m0  ansible_host=pikubed-m0.lan vip_priority=110 drives="[ '/dev/sda' ]"
-pikubed-m1  ansible_host=pikubed-m1.lan vip_priority=109 drives="[ '/dev/sda' ]"
-pikubed-m2  ansible_host=pikubed-m2.lan vip_priority=108 drives="[ '/dev/sda' ]"
-
-[workers]
-pikubed-w0 ansible_host=pikubed-w0.lan drives="[ '/dev/sda' ]"
+all:
+  children:
+    pikubed_cluster:
+      children:
+        masters:
+          hosts:
+            pikubed-m0:
+              ansible_host: pikubed-m0.lan
+              vip_priority: 110 
+              drives:
+              - name: 128usb
+                device: sda
+                partition: 1
+                fstype: f2fs
+                mount: /kadalu
+            pikubed-m1:
+              ansible_host: pikubed-m1.lan
+              vip_priority: 109
+              drives:
+              - name: 128usb
+                device: sda
+                partition: 1
+                fstype: f2fs
+                mount: /kadalu
+            pikubed-m2:
+              ansible_host: pikubed-m2.lan
+              vip_priority: 108
+              drives:
+              - name: 128usb
+                device: sda
+                partition: 1
+                fstype: f2fs
+                mount: /kadalu
+        workers:
+          hosts:
+            pikubed-w0:
+              ansible_host: pikubed-w0.lan
+              drives:
+              - name: 128usb
+                device: sda
+                partition: 1
+                fstype: f2fs
+                mount: /kadalu
