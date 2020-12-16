@@ -9,6 +9,9 @@
     - role: common
       tags: common
 
+    - role: automount-luks
+      tags: luks
+
     - role: log2ram
       vars:
         - log_folder_size: '{{ log2ram.folder_size }}'
