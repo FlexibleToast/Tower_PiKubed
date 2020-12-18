@@ -12,6 +12,7 @@
     state: latest
   loop:
   - f2fs-tools
+  - nfs-common
   
 - name: Remove unnecessary packages
   apt:
