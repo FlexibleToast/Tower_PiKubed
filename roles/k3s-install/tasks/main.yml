@@ -13,6 +13,22 @@
   include_tasks: cgroups_ubuntu20.yml
   when: ansible_distribution_major_version == "20"
 
+- name: Ensure Rancher manifests directory exists
+  file:
+    path: /var/lib/rancher/k3s/server/manifests
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Add kube-vip manifest
+  template:
+    src: vip.yaml
+    dest: /var/lib/rancher/k3s/server/manifests/vip.yaml
+    owner: root
+    group: root
+    mode: '0644'
+
 - name: Get k3s install script
   get_url:
     url: https://get.k3s.io
@@ -25,6 +41,10 @@
     - /tmp/k3s.sh 
     - server
     - --cluster-init
+    - --disable
+    - local-storage
+    - --tls-san
+    - {{ vip }}
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
     INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
@@ -46,6 +66,10 @@
     - server 
     - --server
     - https://{{ groups['masters'][0] }}:6443
+    - --disable
+    - local-storage
+    - --tls-san
+    - {{ vip }}
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
     INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'

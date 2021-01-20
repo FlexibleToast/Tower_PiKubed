@@ -2,9 +2,7 @@
 log2ram:
   folder_size: 512M
 
-vip:
-  ip: 192.168.0.119
-  pass: "{{ vault_vip_pass }}"
+vip: 192.168.0.119
 
 k3s:
   token: "{{ vault_cluster_token }}"

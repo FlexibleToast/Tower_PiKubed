@@ -6,7 +6,6 @@ all:
           hosts:
             pikubed-m0:
               ansible_host: pikubed-m0.lan
-              vip_priority: 110 
               drives:
               - name: 128usb
                 device: sda
@@ -15,7 +14,6 @@ all:
                 mount: /kadalu
             pikubed-m1:
               ansible_host: pikubed-m1.lan
-              vip_priority: 109
               drives:
               - name: 128usb
                 device: sda
@@ -24,7 +22,6 @@ all:
                 mount: /kadalu
             pikubed-m2:
               ansible_host: pikubed-m2.lan
-              vip_priority: 108
               drives:
               - name: 128usb
                 device: sda
