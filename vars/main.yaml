@@ -1,4 +1,6 @@
 ---
+ssh_pub: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
 log2ram:
   folder_size: 512M
 

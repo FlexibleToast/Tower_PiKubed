@@ -50,7 +50,5 @@
         - --force
         - --all
         - --quiet
-        - "/dev/{{ __drive.device }}"
+        - "/dev/{{ item.device }}"
     loop: "{{ drives }}"
-    loop_control:
-      loop_var: __drive

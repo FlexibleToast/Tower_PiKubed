@@ -2,7 +2,7 @@
   hosts: all
   become: true
   vars_files:
-    - vars/main.yml
+    - vars/main.yaml
     - vars/vault
 
   roles:
@@ -11,6 +11,7 @@
 
     - role: automount-luks
       tags: luks
+      when: drives is defined
 
     - role: log2ram
       vars:
@@ -28,4 +29,4 @@
       vars:
         - k3s_token: '{{ k3s.token }}'
         - k3s_channel: "{{ k3s.channel }}"
-        - k3s_vip: '{{ vip.ip }}'
+        - k3s_vip: '{{ vip }}'

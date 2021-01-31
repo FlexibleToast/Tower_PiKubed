@@ -13,6 +13,7 @@
   loop:
   - f2fs-tools
   - nfs-common
+  - cryptsetup
   
 - name: Remove unnecessary packages
   apt:

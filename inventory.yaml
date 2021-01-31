@@ -6,34 +6,34 @@ all:
           hosts:
             pikubed-m0:
               ansible_host: pikubed-m0.lan
-              drives:
-              - name: 128usb
-                device: sda
-                partition: 1
-                fstype: f2fs
-                mount: /kadalu
+              # drives:
+              # - name: sda
+              #   device: sda
+              #   partition: 1
+              #   fstype: f2fs
+              #   mount: /kadalu
             pikubed-m1:
               ansible_host: pikubed-m1.lan
               drives:
-              - name: 128usb
+              - name: sda
                 device: sda
                 partition: 1
                 fstype: f2fs
                 mount: /kadalu
             pikubed-m2:
               ansible_host: pikubed-m2.lan
-              drives:
-              - name: 128usb
-                device: sda
-                partition: 1
-                fstype: f2fs
-                mount: /kadalu
+              # drives:
+              # - name: sda
+              #   device: sda
+              #   partition: 1
+              #   fstype: f2fs
+              #   mount: /kadalu
         workers:
           hosts:
             pikubed-w0:
               ansible_host: pikubed-w0.lan
               drives:
-              - name: 128usb
+              - name: sda
                 device: sda
                 partition: 1
                 fstype: f2fs
