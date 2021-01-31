@@ -15,11 +15,12 @@ all:
             pikubed-m1:
               ansible_host: pikubed-m1.lan
               drives:
-              - name: sda
+              - name: 128usb
                 device: sda
                 partition: 1
                 fstype: f2fs
                 mount: /kadalu
+                opts: "noatime,nodiratime"
             pikubed-m2:
               ansible_host: pikubed-m2.lan
               # drives:
@@ -33,8 +34,9 @@ all:
             pikubed-w0:
               ansible_host: pikubed-w0.lan
               drives:
-              - name: sda
+              - name: 128usb
                 device: sda
                 partition: 1
                 fstype: f2fs
                 mount: /kadalu
+                opts: "noatime,nodiratime"

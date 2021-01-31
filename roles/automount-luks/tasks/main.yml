@@ -63,5 +63,6 @@
     path: "{{ item.mount }}/{{ item.name }}"
     src: /dev/mapper/{{ ansible_devices[item.device].partitions[item.device + (item.partition | string)].uuid }}_luks
     fstype: "{{ item.fstype }}"
+    opts: "{{ item.opts | default('defaults') }}"
     state: mounted
   loop: "{{ drives }}"
