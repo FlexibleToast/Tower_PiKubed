@@ -8,4 +8,4 @@ vip: 192.168.0.119
 
 k3s:
   token: "{{ vault_cluster_token }}"
-  channel: stable
+  channel: v1.19
