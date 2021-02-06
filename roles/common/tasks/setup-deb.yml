@@ -12,6 +12,7 @@
     state: latest
   loop:
   - f2fs-tools
+  - btrfs-progs
   - nfs-common
   - cryptsetup
   
