@@ -13,6 +13,10 @@
       tags: luks
       when: drives is defined
 
+    - role: luks-btrfs
+      tags: btrfs
+      when: btrfs is defined
+
     - role: log2ram
       vars:
         - log_folder_size: '{{ log2ram.folder_size }}'

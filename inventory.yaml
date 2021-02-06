@@ -6,37 +6,46 @@ all:
           hosts:
             pikubed-m0:
               ansible_host: pikubed-m0.lan
-              # drives:
-              # - name: sda
-              #   device: sda
-              #   partition: 1
-              #   fstype: f2fs
-              #   mount: /kadalu
+              btrfs:
+                mount_path: /btrfs
+                mount_options: compress-force=zstd:9,degraded,discard,noatime,nodiratime,ssd
+                meta-level: 1
+                data-level: 1
+                devices:
+                  - name: sda
+                  - name: sdb
+
             pikubed-m1:
               ansible_host: pikubed-m1.lan
-              drives:
-              - name: 128usb
-                device: sda
-                partition: 1
-                fstype: f2fs
-                mount: /kadalu
-                opts: "noatime,nodiratime"
+              btrfs:
+                mount_path: /btrfs
+                mount_options: compress-force=zstd:9,degraded,discard,noatime,nodiratime,ssd
+                meta-level: 1
+                data-level: 1
+                devices:
+                  - name: sda
+                  - name: sdb
             pikubed-m2:
               ansible_host: pikubed-m2.lan
-              # drives:
-              # - name: sda
-              #   device: sda
-              #   partition: 1
-              #   fstype: f2fs
-              #   mount: /kadalu
+              btrfs:
+                mount_path: /btrfs
+                mount_options: compress-force=zstd:9,degraded,discard,noatime,nodiratime,ssd
+                meta-level: 1
+                data-level: 1
+                devices:
+                  - name: sda
+                  - name: sdb
         workers:
           hosts:
             pikubed-w0:
               ansible_host: pikubed-w0.lan
-              drives:
-              - name: 128usb
-                device: sda
-                partition: 1
-                fstype: f2fs
-                mount: /kadalu
-                opts: "noatime,nodiratime"
+              btrfs:
+                mount_path: /btrfs
+                mount_options: compress-force=zstd:9,degraded,discard,noatime,nodiratime,ssd
+                meta-level: 1
+                data-level: 1
+                devices:
+                  - name: sda
+                  - name: sdb
+  vars:
+    ansible_python_interpreter: /usr/bin/python3

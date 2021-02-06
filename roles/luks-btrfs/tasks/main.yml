@@ -1,0 +1,62 @@
+---
+# tasks file for automount-luks
+- name: Create keyfile
+  command: dd if\=/dev/urandom of\=/etc/luks_keyfile bs\=1024 count\=4
+  args:
+    creates: "/etc/luks_keyfile"
+
+- name: Make keyfile read only
+  file:
+    path: "/etc/luks_keyfile"
+    state: file
+    owner: root
+    group: root
+    mode: 0400
+
+- name: Create luks device
+  luks_device:
+    device: '/dev/{{ item }}'
+    state: present
+    keyfile: /etc/luks_keyfile
+  loop: '{{ btrfs.devices }}'
+  register: luks_result
+
+- block:
+  - name: Probe partitions
+    command: partprobe
+
+  - name: Re-gather facts
+    setup:
+  when: luks_result.changed
+
+- name: Open luks device
+  luks_device:
+    name: "{{ item }}_luks"
+    device: '/dev/{{ item }}'
+    state: opened
+    keyfile: /etc/luks_keyfile
+  loop: '{{ btrfs.devices }}'
+
+- name: Create filesystem
+  command:
+    argv:
+    - mkfs.btrfs
+    - -m {{ btrfs.meta-level }}
+    - -d {{ btrfs.data-level }}
+    - "{% for device in btrfs.devices -%}{{ device }}{%- endfor %}"
+
+- name: Add drive to /etc/crypttab
+  crypttab:
+    backing_device: "/dev/{{ item }}"
+    name: "{{ item }}_luks"
+    password: /etc/luks_keyfile
+    state: present
+  loop: "{{ btrfs.devices }}"
+
+- name: Mount the luks device
+  mount:
+    path: "{{ btrfs.mount_path }}"
+    src: /dev/mapper/{{ btrfs.devices[0] }}_luks
+    fstype: btrfs
+    opts: "{{ btrfs.mount_options | default('defaults') }}"
+    state: mounted
