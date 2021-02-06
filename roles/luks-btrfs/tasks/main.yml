@@ -43,7 +43,7 @@
     - mkfs.btrfs
     - -m {{ btrfs.meta-level }}
     - -d {{ btrfs.data-level }}
-    - "{% for device in btrfs.devices -%}{{ device }}{%- endfor %}"
+    - "{% for device in btrfs.devices -%}/dev/mapper/{{ device }}_luks{%- endfor %}"
 
 - name: Add drive to /etc/crypttab
   crypttab:
