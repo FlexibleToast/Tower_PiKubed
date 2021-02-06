@@ -15,7 +15,7 @@
 
 - name: Create luks device
   luks_device:
-    device: '/dev/{{ item }}'
+    device: '/dev/{{ item.name }}'
     state: present
     keyfile: /etc/luks_keyfile
   loop: '{{ btrfs.devices }}'
@@ -31,8 +31,8 @@
 
 - name: Open luks device
   luks_device:
-    name: "{{ item }}_luks"
-    device: '/dev/{{ item }}'
+    name: "{{ item.name }}_luks"
+    device: '/dev/{{ item.name }}'
     state: opened
     keyfile: /etc/luks_keyfile
   loop: '{{ btrfs.devices }}'
@@ -43,12 +43,12 @@
     - mkfs.btrfs
     - -m {{ btrfs.meta-level }}
     - -d {{ btrfs.data-level }}
-    - "{% for device in btrfs.devices -%}/dev/mapper/{{ device }}_luks{%- endfor %}"
+    - "{% for device in btrfs.devices -%}/dev/mapper/{{ device.name }}_luks{%- endfor %}"
 
 - name: Add drive to /etc/crypttab
   crypttab:
-    backing_device: "/dev/{{ item }}"
-    name: "{{ item }}_luks"
+    backing_device: "/dev/{{ item.name }}"
+    name: "{{ item.name }}_luks"
     password: /etc/luks_keyfile
     state: present
   loop: "{{ btrfs.devices }}"
@@ -56,7 +56,7 @@
 - name: Mount the luks device
   mount:
     path: "{{ btrfs.mount_path }}"
-    src: /dev/mapper/{{ btrfs.devices[0] }}_luks
+    src: /dev/mapper/{{ btrfs.devices[0].name }}_luks
     fstype: btrfs
     opts: "{{ btrfs.mount_options | default('defaults') }}"
     state: mounted
