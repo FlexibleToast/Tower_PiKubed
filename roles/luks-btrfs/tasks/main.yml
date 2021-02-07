@@ -38,12 +38,11 @@
   loop: '{{ btrfs.devices }}'
 
 - name: Create filesystem
-  command:
-    argv:
-    - mkfs.btrfs
-    - -m {{ btrfs.meta_level }}
-    - -d {{ btrfs.data_level }}
-    - "{% for device in btrfs.devices -%}/dev/mapper/{{ device.name }}_luks{%- endfor %}"
+  command: mkfs.btrfs -m {{ btrfs.meta_level }} -d {{ btrfs.data_level }} {% for device in btrfs.devices %} /dev/mapper/{{ device.name }}_luks{%- endfor %}
+  register: btrfs_result
+  failed_when:
+    - btrfs_result.rc != 0
+    - '"appears to contain an existing filesystem (btrfs)" not in btrfs_result.stderr'
 
 - name: Add drive to /etc/crypttab
   crypttab:

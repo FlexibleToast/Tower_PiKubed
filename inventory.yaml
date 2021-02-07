@@ -9,8 +9,8 @@ all:
               btrfs:
                 mount_path: /btrfs
                 mount_options: compress-force=zstd:9,degraded,discard,noatime,nodiratime,ssd
-                meta_level: 1
-                data_level: 1
+                meta_level: raid1
+                data_level: raid1
                 devices:
                   - name: sda
                   - name: sdb
@@ -20,8 +20,8 @@ all:
               btrfs:
                 mount_path: /btrfs
                 mount_options: compress-force=zstd:9,degraded,discard,noatime,nodiratime,ssd
-                meta_level: 1
-                data_level: 1
+                meta_level: raid1
+                data_level: raid1
                 devices:
                   - name: sda
                   - name: sdb
@@ -30,8 +30,8 @@ all:
               btrfs:
                 mount_path: /btrfs
                 mount_options: compress-force=zstd:9,degraded,discard,noatime,nodiratime,ssd
-                meta_level: 1
-                data_level: 1
+                meta_level: raid1
+                data_level: raid1
                 devices:
                   - name: sda
                   - name: sdb
@@ -42,8 +42,8 @@ all:
               btrfs:
                 mount_path: /btrfs
                 mount_options: compress-force=zstd:9,degraded,discard,noatime,nodiratime,ssd
-                meta_level: 1
-                data_level: 1
+                meta_level: raid1
+                data_level: raid1
                 devices:
                   - name: sda
                   - name: sdb

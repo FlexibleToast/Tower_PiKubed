@@ -8,7 +8,7 @@
     fetch:
       src: /etc/rancher/k3s/k3s.yaml
       dest: ~/.kube/config
-      mode: 0600
+      mode: 0400
       flat: yes
     become: yes
     when: inventory_hostname == groups['masters'][0]

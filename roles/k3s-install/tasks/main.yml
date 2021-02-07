@@ -28,6 +28,7 @@
     owner: root
     group: root
     mode: '0755'
+  when: inventory_hostname in groups['masters']
 
 - name: Add kube-vip manifest
   template:
@@ -36,6 +37,7 @@
     owner: root
     group: root
     mode: '0644'
+  when: inventory_hostname in groups['masters']
 
 - name: Get k3s install script
   get_url:
@@ -55,8 +57,7 @@
     - "{{ k3s_vip }}"
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
-    INSTALL_K3S_CHANNEL: '{{ k3s_channel | default(omit) }}'
-    INSTALL_K3S_VERSION: '{{ k3s_version | default(omit) }}'
+    INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
     K3S_KUBECONFIG_MODE: 644
   when: inventory_hostname == groups['masters'][0]
   args:
@@ -82,8 +83,7 @@
     - "{{ k3s_vip }}"
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
-    INSTALL_K3S_CHANNEL: '{{ k3s_channel | default(omit) }}'
-    INSTALL_K3S_VERSION: '{{ k3s_version | default(omit) }}'
+    INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
     K3S_KUBECONFIG_MODE: 644
   when: inventory_hostname in groups['masters'][1:]
   args:
@@ -106,8 +106,7 @@
     - https://{{ groups['masters'][0] }}:6443
   environment:
     K3S_TOKEN: '{{ k3s_token }}'
-    INSTALL_K3S_CHANNEL: '{{ k3s_channel | default(omit) }}'
-    INSTALL_K3S_VERSION: '{{ k3s_version | default(omit) }}'
+    INSTALL_K3S_CHANNEL: '{{ k3s_channel }}'
   when: inventory_hostname in groups['workers']
   args:
     creates: /var/lib/rancher/k3s/agent/client-ca.crt
