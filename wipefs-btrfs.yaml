@@ -1,0 +1,51 @@
+---
+- name: Wipe USB drives
+  hosts: all
+  tasks:
+
+  - name: Remove luks mountpoint
+    mount:
+      path: "{{ btrfs.mount_path }}"
+      src: /dev/mapper/{{ btrfs.devices[0].name }}_luks
+      fstype: btrfs
+      state: absent
+
+  - name: Remove from /etc/crypttab
+    crypttab:
+      name: "{{ item.name }}_luks"
+      state: absent
+    loop: "{{ btrfs.devices }}"
+
+  - name: Close luks device
+    luks_device:
+      name: "{{ item.name }}_luks"
+      device: '/dev/{{ item.name }}'
+      state: closed
+      keyfile: /etc/luks_keyfile
+    loop: '{{ btrfs.devices }}'
+
+  - name: Remove luks device
+    luks_device:
+      device: '/dev/{{ item.name }}'
+      state: absent
+    loop: '{{ btrfs.devices }}'
+
+  - name: Remove drive partition
+    command:
+      argv:
+      - dd
+      - if=/dev/zero
+      - of=/dev/{{ item.name }}
+      - bs=1024
+      - count=4
+    loop: '{{ btrfs.devices }}'
+
+  - name: Use wipefs on each drive
+    command:
+      argv:
+        - wipefs
+        - --force
+        - --all
+        - --quiet
+        - "/dev/{{ item.name }}"
+    loop: "{{ btrfs.devices }}"
