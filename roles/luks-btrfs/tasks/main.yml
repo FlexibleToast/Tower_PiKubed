@@ -41,8 +41,8 @@
   command:
     argv:
     - mkfs.btrfs
-    - -m {{ btrfs.meta-level }}
-    - -d {{ btrfs.data-level }}
+    - -m {{ btrfs.meta_level }}
+    - -d {{ btrfs.data_level }}
     - "{% for device in btrfs.devices -%}/dev/mapper/{{ device.name }}_luks{%- endfor %}"
 
 - name: Add drive to /etc/crypttab
